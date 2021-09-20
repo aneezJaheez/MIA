@@ -2,7 +2,7 @@
 A torch-based implementation of the Membership Inference Attack described in the paper [Membership Inference Attacks against Machine Learning Models](https://arxiv.org/pdf/1610.05820.pdf)
 
 ## Index
-* [Overview]
+* [Overview](#Overview)
 * [Dependencies and Environment]
 * [Datasets and Preparation]
 * [Attack Architecture]
@@ -13,3 +13,7 @@ A torch-based implementation of the Membership Inference Attack described in the
 * [Running the Attack]
 * [Using Custom Datasets and Models]
 * [Functionality to be added]
+
+## Overview
+A membership inference attack involves involves an adversarial ML classifier, which, given a data record and a blackbox access to a victim classifier, tries to determine whether or not the data record was part of the victim's training dataset. The attack succeeds if the adversary correctly determines if said data record is part of the victim model's training dataset. The objective of the attacker is to recognise such differences in the victim model's behaviour and use it to distinguish members from non-members of the victim's training dataset based solely on the victim's posterior probability outputs.
+
