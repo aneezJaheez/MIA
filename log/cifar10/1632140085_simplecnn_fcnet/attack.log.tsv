@@ -1,0 +1,168 @@
+ATTACKER:
+  CRITERION: bce
+  MODEL:
+    ARCH: fcnet
+    LAYER_DIMS: [64, 32, 16, 8]
+  OPTIMIZER:
+    ALPHA: 0.0001
+    BETAS: (0.9, 0.999)
+    GAMMA: 0.0005
+    MOMENTUM: 0.0
+    NAME: adam
+  TEST:
+    BATCH_SIZE: 64
+    CHECKPOINT_DIR: ./log/cifar10/1632140085_simplecnn_fcnet/attacker_files
+    DATASET: cifar10
+    DATA_PATH: ./datasets/cifar-10-batches-py/attack_data
+    ENABLE: True
+    LABELS: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  TRAIN:
+    BATCH_SIZE: 64
+    CHECKPOINT_DIR: ./log/cifar10/1632140085_simplecnn_fcnet/attacker_files
+    DATASET: cifar10
+    DATA_PATH: ./log/cifar10/1632140085_simplecnn_fcnet/attacker_files
+    ENABLE: True
+    NUM_EPOCHS: 1
+  VICTIM_CLASSES: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+LOG_DIR: ./log/cifar10/1632140085_simplecnn_fcnet
+LOG_FILE: ./log/cifar10/1632140085_simplecnn_fcnet/attack.log.tsv
+NUM_WORKERS: 2
+SHADOW:
+  CRITERION: ce
+  DATA_OUT_PATH: ./log/cifar10/1632140085_simplecnn_fcnet/attacker_files
+  MODEL:
+    ARCH: simplecnn
+  NUM_MODELS: 1
+  OPTIMIZER:
+    ALPHA: 0.001
+    BETAS: (0.9, 0.999)
+    GAMMA: 0.0005
+    MOMENTUM: 0.0
+    NAME: adam
+  TRAIN:
+    BATCH_SIZE: 64
+    CHECKPOINT_DIR: ./log/cifar10/1632140085_simplecnn_fcnet/shadow_files
+    DATASET: cifar10
+    DATA_PATH: /export/home/aneezahm001/libraries/papers-to-code/MI/datasets/cifar-10-batches-py/shadow_data/
+    ENABLE: True
+    NUM_EPOCHS: 1
+    SET_SIZE: 5000
+USE_GPU: 1
+VICTIM:
+  IN_FEATURES: 3
+  NUM_CLASSES: 10
+
+SimpleCNN(
+  (conv1): Sequential(
+    (0): Conv2d(3, 6, kernel_size=(5, 5), stride=(1, 1))
+    (1): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (2): Tanh()
+  )
+  (conv2): Sequential(
+    (0): Conv2d(6, 16, kernel_size=(5, 5), stride=(1, 1))
+    (1): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (2): Tanh()
+  )
+  (fc1): Sequential(
+    (0): Linear(in_features=400, out_features=128, bias=True)
+    (1): Tanh()
+  )
+  (fc2): Sequential(
+    (0): Linear(in_features=128, out_features=10, bias=True)
+    (1): Sigmoid()
+  )
+)
+
+Training shadow model #1
+run_id	epoch	split	loss	accuracy	best_accuracy
+2021-09-20 20:14:49.654429	1	train	2.13626896882359	24.98	24.98
+2021-09-20 20:14:49.654429	1	test	2.0859635147867324	29.7	29.7
+FCNet(
+  (module): Sequential(
+    (fc_1): Linear(in_features=10, out_features=64, bias=False)
+    (batchnorm_1): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (relu_1): ReLU()
+    (fc_2): Linear(in_features=64, out_features=32, bias=False)
+    (batchnorm_2): BatchNorm1d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (relu_2): ReLU()
+    (fc_3): Linear(in_features=32, out_features=16, bias=False)
+    (batchnorm_3): BatchNorm1d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (relu_3): ReLU()
+    (fc_4): Linear(in_features=16, out_features=8, bias=False)
+    (batchnorm_4): BatchNorm1d(8, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (relu_4): ReLU()
+  )
+  (fc_out): Linear(in_features=8, out_features=1, bias=True)
+  (out_activation): Sigmoid()
+)
+
+Starting attack sequence for class 0
+run_id	epoch	split	loss	accuracy	best_accuracy
+2021-09-20 20:15:00.211833	1	train	0.7136763781309128	49.45054945054945	49.45054945054945
+2021-09-20 20:15:00.211833	1	test	0.6998146679252386	50.445986124876114	50.445986124876114
+Starting attack sequence for class 1
+run_id	epoch	split	loss	accuracy	best_accuracy
+2021-09-20 20:15:04.268748	1	train	0.7306145541369915	52.61569416498994	52.61569416498994
+2021-09-20 20:15:04.268748	1	test	0.6987601704895496	51.14802149487054	51.14802149487054
+Starting attack sequence for class 2
+run_id	epoch	split	loss	accuracy	best_accuracy
+2021-09-20 20:15:07.792626	1	train	0.6951894946396351	51.681957186544345	51.681957186544345
+2021-09-20 20:15:07.792626	1	test	0.7063515707850456	50.02498750624687	50.02498750624687
+Starting attack sequence for class 3
+run_id	epoch	split	loss	accuracy	best_accuracy
+2021-09-20 20:15:11.709256	1	train	0.7258965000510216	47.983870967741936	47.983870967741936
+2021-09-20 20:15:11.709256	1	test	0.6932298075407743	47.84569138276553	47.84569138276553
+Starting attack sequence for class 4
+run_id	epoch	split	loss	accuracy	best_accuracy
+2021-09-20 20:15:15.632571	1	train	0.7074365721029394	50.19083969465649	50.19083969465649
+2021-09-20 20:15:15.632571	1	test	0.7053898181766272	49.70178926441352	49.70178926441352
+Starting attack sequence for class 5
+run_id	epoch	split	loss	accuracy	best_accuracy
+2021-09-20 20:15:19.047463	1	train	0.7012383118271828	49.15590863952334	49.15590863952334
+2021-09-20 20:15:19.047463	1	test	0.6944851509986385	52.25773718924404	52.25773718924404
+Starting attack sequence for class 6
+run_id	epoch	split	loss	accuracy	best_accuracy
+2021-09-20 20:15:23.295299	1	train	0.7051684446632862	50.506072874493924	50.506072874493924
+2021-09-20 20:15:23.295299	1	test	0.693007023045511	51.52690256907417	51.52690256907417
+Starting attack sequence for class 7
+run_id	epoch	split	loss	accuracy	best_accuracy
+2021-09-20 20:15:27.247611	1	train	0.7337161339819431	49.59839357429719	49.59839357429719
+2021-09-20 20:15:27.247611	1	test	0.697508494700155	52.00208008320333	52.00208008320333
+Starting attack sequence for class 8
+run_id	epoch	split	loss	accuracy	best_accuracy
+2021-09-20 20:15:31.010016	1	train	0.7087692953646183	48.807157057654074	48.807157057654074
+2021-09-20 20:15:31.010016	1	test	0.7130003366619349	50.074887668497254	50.074887668497254
+Starting attack sequence for class 9
+run_id	epoch	split	loss	accuracy	best_accuracy
+2021-09-20 20:15:35.091314	1	train	0.6971760094165802	50.354609929078016	50.354609929078016
+2021-09-20 20:15:35.091314	1	test	0.692467488348484	50.99304865938431	50.99304865938431
+FCNet(
+  (module): Sequential(
+    (fc_1): Linear(in_features=10, out_features=64, bias=False)
+    (batchnorm_1): BatchNorm1d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (relu_1): ReLU()
+    (fc_2): Linear(in_features=64, out_features=32, bias=False)
+    (batchnorm_2): BatchNorm1d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (relu_2): ReLU()
+    (fc_3): Linear(in_features=32, out_features=16, bias=False)
+    (batchnorm_3): BatchNorm1d(16, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (relu_3): ReLU()
+    (fc_4): Linear(in_features=16, out_features=8, bias=False)
+    (batchnorm_4): BatchNorm1d(8, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (relu_4): ReLU()
+  )
+  (fc_out): Linear(in_features=8, out_features=1, bias=True)
+  (out_activation): Sigmoid()
+)
+
+victim_class	split	loss	accuracy
+0	test	0.6994046326726675	50.445986124876114
+1	test	0.6987741626799107	51.14802149487054
+2	test	0.7056147959083319	50.02498750624687
+3	test	0.6934165917336941	47.84569138276553
+4	test	0.7041985914111137	49.70178926441352
+5	test	0.694471090070663	52.25773718924404
+6	test	0.6929309837745897	51.52690256907417
+7	test	0.7001233350846076	52.00208008320333
+8	test	0.713461497798562	50.074887668497254
+9	test	0.6925313994288445	50.99304865938431
