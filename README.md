@@ -36,7 +36,7 @@ A few victim models can be found in [victims/victim_backbones.py](https://github
 
 ## Shadow Model
 
-An instance of the attack may consist of multiple shadow models, the goal of which is to mimic the target model as closely as possible. The desired performance is best achieved when the shadow models are reasonably similar or even greater in complexity in comparison to the victim models. However, such functionality extraction is a difficult problem in and of itself in the case of more complex deep networks, a scenario that is not discussed in the paper under which the attack does not turn out to be feasible. 
+An instance of the attack may consist of multiple shadow models, the goal of which is to mimic the target model as closely as possible. The desired performance is best achieved when the shadow models are reasonably similar or even greater in complexity in comparison to the victim models. However, such functionality extraction is a difficult problem in and of itself in the case of more complex deep networks, a scenario that is not discussed in the paper under which the attack does not turn out to be feasible in its current state. 
 
 The difference between the shadow model and the victim model is that we know the training dataset of the shadow model and its ground-truth labels. Given that the shadow models learn to mimic the victim model in their functionality, we can use the inputs and outputs of the shadow model to teach the main attacks model how to distinguish between members and non-members of the victims training dataset. The number of shadow models is a hyperparameter that can be tuned. According to the findings in the paper, the attack accuracy increases with an increase in the number of shadow models. 
 
