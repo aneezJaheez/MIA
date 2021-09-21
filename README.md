@@ -5,12 +5,11 @@ A torch-based implementation of the Membership Inference Attack described in the
 * [Overview](#Overview)
 * [Dependencies and Environment](#Dependencies-and-Environment)
 * [Datasets and Preparation]
+* [Running the Attack](#Running-the-Attack)
 * [Attack Architecture](#Attack-Architecture)
   * [Victim Model](#Victim-Model)
   * [Shadow Model](#Shadow-Model)
   * [Attack Model](#Attack-Model)
-  * [Error Metrics]
-* [Running the Attack]
 * [Using Custom Datasets and Models]
 * [Functionality to be added]
 
