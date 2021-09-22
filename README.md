@@ -4,7 +4,7 @@ A torch-based implementation of the Membership Inference Attack described in the
 ## Index
 * [Overview](#Overview)
 * [Dependencies and Environment](#Dependencies-and-Environment)
-* [Datasets and Preparation]
+* [Datasets and Preparation](#Datasets-and-Preparation)
 * [Running the Attack](#Running-the-Attack)
 * [Attack Architecture](#Attack-Architecture)
   * [Victim Model](#Victim-Model)
