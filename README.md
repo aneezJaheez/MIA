@@ -30,7 +30,11 @@ Currently, the code is only implemented for the CIFAR10 dataset, which I will us
 
 The CIFAR10 dataset consists of 60000 images equally split among 10 classes, with 50000 and 10000 images in the train and test sets respectively. 
 <ol>
- <li>The<\li> 
+ <li>The trainset is first split into 2 sets of size 15000 and 35000 reserved for the victim training and shadow model training respectively. The splits are prepared such that they are disjoint and each split has an equal amount of data from each class.</li>
+ <li>The 35000 shadow set images are further randomly split into 2 sets of equal sizes, each set here serving as the pool of train images and test images that each shadow model will choose from as its train and test images.</li>
+ <li>During the shadow training phase, the shadow models are trained sequentially. Each shadow model picks "cfg.SHADOW.TRAIN.SET_SIZE" (see attack configs) images from the train and test image pool for training and testing the shadow model respectively.</li>
+ <li>At the end of training a shadow model, we make a single pass through all the train and test images for that shadow model to get all the posterior probability outputs. The train images are labelled 1 for "in" and the test images are labelled 0 for "out". Hence, each record containing the posterior probability and the membership label acts as teh training data for the subsequent attack models.</li>
+ <>
 </ol>
 
 ## Running the Attack
