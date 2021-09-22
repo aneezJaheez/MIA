@@ -67,7 +67,7 @@ Each class of model architectures ([victim](https://github.com/aneezJaheez/MIA/b
 
 For instance, to implement your own shadow model, say, "ExampleModel":
 
-1. Assign a name to your model and add it to the list of available models in the [attack_backbones.py](https://github.com/aneezJaheez/MIA/blob/main/attack_models/attack_backbones.py) file.
+1. Assign a name to your model and add it to the list of available models in the [shadow_backbones.py](https://github.com/aneezJaheez/MIA/blob/main/shadow_models/shadow_backbones.py) file.
 ```
 available_shadow_backbones = ["simplecnn", "examplemodel"]
 ```
