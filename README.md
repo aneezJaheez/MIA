@@ -65,14 +65,54 @@ Although the attack has been tested only on a CNN trained on CIFAR10, the attack
 
 Each class of model architectures ([victim](https://github.com/aneezJaheez/MIA/blob/main/victims/victim_backbones.py), [shadow](https://github.com/aneezJaheez/MIA/blob/main/shadow_models/shadow_backbones.py), and [attack](https://github.com/aneezJaheez/MIA/blob/main/attack_models/attack_backbones.py)) are organized in a similar manner, with the file pertaining to each containing the model backbone class definitions, and a get_model() function to retrieve a model by its assigned name. 
 
-To implement your own model:
-<ol>
- <li>Name your model and and it to the list of available backbones at the top of each file.</li>
+For instance, to implement your own shadow model, say, "ExampleModel":
+
+1. Assign a name to your model and add it to the list of available models in the [attack_backbones.py](https://github.com/aneezJaheez/MIA/blob/main/attack_models/attack_backbones.py) file.
 ```
-available_victim_backbones = ["simplecnn", "pytorchcnn", "simplemlp"]
+available_shadow_backbones = ["simplecnn", "examplemodel"]
 ```
 
-</ol>
+2. Describe the new model architecture as a class that extends PyTorch's module class, and include it in the same file.
+
+```
+class ExampleModel(nn.Module):
+    def __init__(self, args):
+        super(ExampleModel, self).__init__()
+
+    def forward(self, x):
+        return x
+```
+
+3. After your model has been added to the backbone file, and the name assigned to it has been added to the list, you can add and if-else block to the corresponding get_model() function in the same file so that it can be found during runtime. 
+
+```
+def get_shadow_model(model, num_classes=10, input_features=3, checkpoint_path=None, device=torch.device("cpu")):
+    assert model in available_shadow_backbones, "You have specified a shadow model that has not been implemented. Please choose a model from " + str(available_shadow_backbones)
+
+    if model == "simplecnn":
+        model = SimpleCNN(num_classes=num_classes, input_features=input_features)
+    elif model == "exampleModel":
+        model = ExampleModel(args)
+    
+    if checkpoint_path is not None:
+        checkpoint = torch.load(checkpoint_path)
+        try:
+            model.load_state_dict(checkpoint["state_dict"])
+        except KeyError:
+            model.load_state_dict(checkpoint)
+        
+    model.to(device)
+    return model
+```
+
+4. Before running the attack, specify the model to be used in the [configurations](https://github.com/aneezJaheez/MIA/blob/main/configs/defaults.py) file using its assigned name in the list. For instance, to specify our "ExampleModel" as the shadow model for the attack:
+
+```
+_C.SHADOW.MODEL.ARCH = "examplemodel" #Name of the shadow model architecture. This will be used when selecting the model function.
+```
+
+A similar sequence of steps can be followed to implement a new attack model or victim model. 
+
 
 ## Attack Architecture
 ### Victim Model
