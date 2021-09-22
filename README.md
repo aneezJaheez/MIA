@@ -24,6 +24,15 @@ The architecture is implemented using PyTorch 1.9.1. A full list of dependencies
 conda env create -f environment.yml
 ```
 
+## Datasets and Preparation
+
+Currently, the code is only implemented for the CIFAR10 dataset, which I will use to describe the data preparation recipe I followed. For information on how to implement your own datasets, as well as your own attack, victim, and shadow models, check out [this section](#Using-Custom-Datasets-and-Models).
+
+The CIFAR10 dataset consists of 60000 images equally split among 10 classes, with 50000 and 10000 images in the train and test sets respectively. 
+<ol>
+ <li>The<\li> 
+</ol>
+
 ## Running the Attack
 
 After installing the required dependencies and preparing the datasets for training the shadow models according to the recipe highlighted in the paper or in [Datasets and Preparations](#Datasets-and-Preparation), the attack can be run from the root directory of the repository via the command 
