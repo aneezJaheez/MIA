@@ -6,11 +6,11 @@ A torch-based implementation of the Membership Inference Attack described in the
 * [Dependencies and Environment](#Dependencies-and-Environment)
 * [Datasets and Preparation](#Datasets-and-Preparation)
 * [Running the Attack](#Running-the-Attack)
+* [Using Custom Datasets and Models](#Using-Custom-Datasets-and-Models)
 * [Attack Architecture](#Attack-Architecture)
   * [Victim Model](#Victim-Model)
   * [Shadow Model](#Shadow-Model)
   * [Attack Model](#Attack-Model)
-* [Using Custom Datasets and Models]
 * [Functionality to be added]
 
 ## Overview
@@ -39,7 +39,7 @@ The CIFAR10 dataset consists of 60000 images equally split among 10 classes, wit
  <li>Finally, for the test data of the attack models, we use the original 15000 records used to train the victim model in step 1 as the "in" data, and the original CIFAR10 testset as the "out" data. These records are passed into the trained victim model to obtain the posterior probabilities, and is assumed to belong to the class to which it assigned the highest probability. This record is sent to the attack model trained on the same class to determine its membership status.</li>
 </ol>
 
-Steps 2-6 are carried out within the code during the attack. The data preparation for step 1 and 7 will have to be carried out manually prior to the attack. An example for the preparation of each of these steps is shown in [./data_prep_examples](https://github.com/aneezJaheez/MIA/tree/main/data_prep_examples).
+Steps 2-6 are carried out during runtime. The data preparation for step 1 and 7 will have to be carried out manually prior to the attack. An example for the preparation of each of these steps is shown in [./data_prep_examples](https://github.com/aneezJaheez/MIA/tree/main/data_prep_examples).
 
 ## Running the Attack
 
@@ -49,14 +49,30 @@ After installing the required dependencies and preparing the datasets for traini
 python run_attack.py
 ```
 
-In addition, the attack includes a list of configurations that can be tuned according to the attack requiremenets. A full list of configurations ar can be found in [configs/defaults.py](https://github.com/aneezJaheez/MIA/blob/main/configs/defaults.py). The configurations can either be tuned directly in the file, or stated in the initial command to run the attack. For instance specifying the shadow model architecture, optimizer and its hyperparameters can be achieved via the following command:
+In addition, the attack includes a list of configurations that can be tuned according to the attack requiremenets. A full list of configurations ar can be found in [configs/defaults.py](https://github.com/aneezJaheez/MIA/blob/main/configs/defaults.py). The configurations can either be tuned directly in the file, or stated in the initial command to run the attack. For instance specifying the shadow model architecture, optimizer and its hyperparameters, and running the attack using the GPU can be achieved via the following command:
 
 ```
-python run_attack.py SHADOW.MODEL.ARCH simplecnn SHADOW.OPTIMIZER.NAME sgd SHADOW.OPTIMIZER.ALPHA 0.001 
+python run_attack.py SHADOW.MODEL.ARCH simplecnn SHADOW.OPTIMIZER.NAME sgd SHADOW.OPTIMIZER.ALPHA 0.001 GPU 1
 ```
 
 The configurations listed on the command line in the above manner take precendence over the configurations in the main configurations file.
 
+## Using Custom Datasets and Models
+
+Although the attack has been tested only on a CNN trained on CIFAR10, the attack can be extended to work on any classification model and dataset. 
+
+### Implementing new models
+
+Each class of model architectures ([victim](https://github.com/aneezJaheez/MIA/blob/main/victims/victim_backbones.py), [shadow](https://github.com/aneezJaheez/MIA/blob/main/shadow_models/shadow_backbones.py), and [attack](https://github.com/aneezJaheez/MIA/blob/main/attack_models/attack_backbones.py)) are organized in a similar manner, with the file pertaining to each containing the model backbone class definitions, and a get_model() function to retrieve a model by its assigned name. 
+
+To implement your own model:
+<ol>
+ <li>Name your model and and it to the list of available backbones at the top of each file.</li>
+```
+available_victim_backbones = ["simplecnn", "pytorchcnn", "simplemlp"]
+```
+
+</ol>
 
 ## Attack Architecture
 ### Victim Model
@@ -67,7 +83,7 @@ As stated in the paper, we assume blackbox access to a trained victim classifier
 
 A few victim models can be found in [victims/victim_backbones.py](https://github.com/aneezJaheez/MIA/blob/main/victims/victim_backbones.py).
 
-## Shadow Model
+### Shadow Model
 
 An instance of the attack may consist of multiple shadow models, the goal of which is to mimic the target model as closely as possible. The desired performance is best achieved when the shadow models are reasonably similar or even greater in complexity in comparison to the victim models. However, such functionality extraction is a difficult problem in and of itself in the case of more complex deep networks, a scenario that is not discussed in the paper under which the attack does not turn out to be feasible in its current state. 
 
@@ -77,7 +93,7 @@ We query each shadow model with its own training dataset and a disjoint testset.
 
 The shadow model used in this instance can be found in [shadow_models/shadow_backbones.py](https://github.com/aneezJaheez/MIA/blob/main/shadow_models/shadow_backbones.py).
 
-## Attack Model
+### Attack Model
 
 The attack model is the final component of the architecture, task of which is to distinguish the target victim model's behaviour on the training inputs from its behaviour on the inputs that it did not encounter during training. As such, the attack model is trained as a binary classifier, the training data for this model is the labelled inputs and outputs of the shadow models.
 
