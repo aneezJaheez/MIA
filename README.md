@@ -39,7 +39,7 @@ The CIFAR10 dataset consists of 60000 images equally split among 10 classes, wit
  <li>Finally, for the test data of the attack models, we use the original 15000 records used to train the victim model in step 1 as the "in" data, and the original CIFAR10 testset as the "out" data. These records are passed into the trained victim model to obtain the posterior probabilities, and is assumed to belong to the class to which it assigned the highest probability. This record is sent to the attack model trained on the same class to determine its membership status.</li>
 </ol>
 
-Steps --- are carried out within the code during the attack. The data preparation for step - and - will have to be carried out manually prior to the attack. An example for the preparation of each of these steps is shown in [./data_prep_examples](https://github.com/aneezJaheez/MIA/tree/main/data_prep_examples).
+Steps 2-6 are carried out within the code during the attack. The data preparation for step 1 and 7 will have to be carried out manually prior to the attack. An example for the preparation of each of these steps is shown in [./data_prep_examples](https://github.com/aneezJaheez/MIA/tree/main/data_prep_examples).
 
 ## Running the Attack
 
