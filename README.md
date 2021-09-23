@@ -83,7 +83,7 @@ class ExampleModel(nn.Module):
         return x
 ```
 
-3. After your model has been added to the backbone file, and the name assigned to it has been added to the list, you can add and if-else block to the corresponding get_model() function in the same file so that it can be found during runtime. 
+3. After your model has been added to the backbone file, and the name assigned to it has been added to the list, add and if-else block to the corresponding get_model() function in the same file so that it can be found during runtime. 
 
 ```
 def get_shadow_model(model, num_classes=10, input_features=3, checkpoint_path=None, device=torch.device("cpu")):
@@ -91,7 +91,7 @@ def get_shadow_model(model, num_classes=10, input_features=3, checkpoint_path=No
 
     if model == "simplecnn":
         model = SimpleCNN(num_classes=num_classes, input_features=input_features)
-    elif model == "exampleModel":
+    elif model == "examplemodel":
         model = ExampleModel(args)
     
     if checkpoint_path is not None:
@@ -113,6 +113,78 @@ _C.SHADOW.MODEL.ARCH = "examplemodel" #Name of the shadow model architecture. Th
 
 A similar sequence of steps can be followed to implement a new attack model or victim model. 
 
+### Implementing new datasets
+
+The datasets in this repository are prepared extending the PyTorch dataset class. The attack requires a dataset class that supplies data for the following:
+1. The data pool for the shadow models.
+2. The classwise data to train and test the attack model.
+
+In this case, for CIFAR10, we have supplied these 3 splits using two dataset modules, one to provide data to the shadow model and victim model and one for the attack model, which can be found in [datasets/make_dataset.py](https://github.com/aneezJaheez/MIA/blob/main/datasets/make_dataset.py).
+
+After preparing the required data for your required datasets according to steps 1 and 7 in the previous [section](#Datasets-and-Preparation), implement the dataset classes that can be used to access each of the splits mentioned above. In the implemented case for CIFAR10, we have:
+
+1. A "Cifar10" class that provides the data pool for shadow model training and testing.
+
+Note : We have a single pool of data for the shadow model, which is split into disjoint halves during runtime to serve as the train and test pools. Hence, the entire shadow model data pool is loaded in at once without regard to the train and test splits.
+
+2. A "Cifar10Attack" class that provides the train and test data for the attack model. The attack model dataset requires selective access to the records for each class. Hence, this dataset contains an argument to specify the specific class for which the data is required, which is specified during training of each attack model.
+
+```
+class Cifar10Attack(Dataset):
+    def __init__(self, root, cifar_class_label, split, transforms):
+        super(Cifar10Attack, self).__init__()
+```
+
+To summarize, you will need a dataset class for the shadow model data that loads in all the shadow model data, and a dataset class for the attack model which is capable of loading in data for each individual class for training and testing separately to train and test each individual attack model assined to that respective class.
+
+After these dataset classes have been implemented, include it in and add a conditional block to the [train_shadow.py](https://github.com/aneezJaheez/MIA/blob/main/utils/train_shadow.py) and [train_attacker.py](https://github.com/aneezJaheez/MIA/blob/main/utils/train_attacker.py) files so that it can be located during runtime. 
+
+In the train_shadow.py file:
+
+```
+from datasets.make_dataset import yourshadowdataset
+
+    if cfg.SHADOW.TRAIN.DATASET == "cifar10":
+        transform_func = dataset_to_transforms["cifar"]["test"]
+        shadow_dataset = Cifar10(
+            root=cfg.SHADOW.TRAIN.DATA_PATH, 
+            data_split="train", 
+            model_split="shadow", 
+            transforms=transform_func
+        )
+    elif cfg.SHADOW.TRAIN.DATASET == "yourshadowdataset":
+        .
+        .
+        .
+```
+
+and in the train_attacker.py file:
+
+```
+from datasets.make_dataset import yourattackdataset
+
+    for victim_class in cfg.ATTACKER.VICTIM_CLASSES:
+        if cfg.ATTACKER.TEST.DATASET == "cifar10":
+            attack_trainset = Cifar10Attack(
+                root=cfg.ATTACKER.TRAIN.DATA_PATH,
+                transforms=None,
+                cifar_class_label=victim_class,
+                split="train",
+            )
+
+            attack_testset = Cifar10Attack(
+                root=cfg.ATTACKER.TEST.DATA_PATH,
+                transforms=None,
+                cifar_class_label=victim_class,
+                split="test",
+            )
+        elif cfg.ATTACKER.TEST.DATASET == "yourattackdataset":
+            .
+            .
+            .
+```
+
+In additiion, you can also specify your transform functions in the [datasets/__init__.py](https://github.com/aneezJaheez/MIA/blob/main/datasets/__init__.py) file.
 
 ## Attack Architecture
 ### Victim Model
