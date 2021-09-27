@@ -41,8 +41,20 @@ def run_attack_training(cfg, device):
                 af.write(str(model) + "\n\n")
             log_flag = True
 
-        if cfg.ATTACKER.OPTIMIZER.NAME == "adam":
-            attacker_optimizer = optim.Adam(model.parameters(), lr=cfg.ATTACKER.OPTIMIZER.ALPHA)
+        if cfg.ATTACKER.OPTIMIZER.NAME == "sgd":
+            attacker_optimizer = optim.SGD(
+                model.parameters(), 
+                lr=cfg.ATTACKER.OPTIMIZER.ALPHA,
+                weight_decay=cfg.ATTACKER.OPTIMIZER.GAMMA,
+                momentum=cfg.ATTACKER.OPTIMIZER.MOMENTUM,
+            )
+        elif cfg.ATTACKER.OPTIMIZER.NAME == "adam":
+            attacker_optimizer = optim.Adam(
+                model.parameters(),
+                lr=cfg.ATTACKER.OPTIMIZER.ALPHA,
+                weight_decay=cfg.ATTACKER.OPTIMIZER.GAMMA,
+                betas=cfg.ATTACKER.BETAS,
+            )
 
         if cfg.ATTACKER.CRITERION == "bce":
             attacker_criterion = nn.BCELoss()
