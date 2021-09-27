@@ -15,7 +15,7 @@ def run_shadow_training(cfg, device):
             root=cfg.SHADOW.TRAIN.DATA_PATH, 
             data_split="train", 
             model_split="shadow", 
-            transforms=transform_func
+            transforms=transform_func,
         )
         
     train_test_size = len(shadow_dataset) // 2
@@ -35,7 +35,7 @@ def run_shadow_training(cfg, device):
             cfg.SHADOW.MODEL.ARCH, 
             num_classes=cfg.VICTIM.NUM_CLASSES, 
             input_features=cfg.VICTIM.IN_FEATURES, 
-            device=device
+            device=device,
         )
 
         if not log_flag:
@@ -47,12 +47,16 @@ def run_shadow_training(cfg, device):
         if cfg.SHADOW.OPTIMIZER.NAME == "adam":
             shadow_optimizer = optim.Adam(
                 shadow_model_backbone.parameters(), 
-                lr=cfg.SHADOW.OPTIMIZER.ALPHA
+                lr=cfg.SHADOW.OPTIMIZER.ALPHA,
+                betas=cfg.SHADOW.OPTIMIZER.BETAS,
+                weight_decay=cfg.SHADOW.OPTIMIZER.GAMMA,
             )
         elif cfg.SHADOW.OPTIMIZER.NAME == "sgd":
             shadow_optimizer = optim.SGD(
                 shadow_model_backbone.parameters(), 
-                lr=cfg.SHADOW.OPTIMIZER.ALPHA
+                lr=cfg.SHADOW.OPTIMIZER.ALPHA,
+                weight_decay=cfg.SHADOW.OPTIMIZER.GAMMA,
+                momentum=cfg.SHADOW.OPTIMIZER.MOMENTUM,
             )
         
         if cfg.SHADOW.CRITERION == "ce":
