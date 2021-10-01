@@ -37,9 +37,10 @@ def run_attack_training(cfg, device):
 
         if not log_flag:
             with open(cfg.LOG_FILE, "a") as af:
-                to_write = "==========ATTACK MODEL ARCHITECTURE==========\n"
-                af.write(str(model) + "\n\n")
+                to_write = "==========ATTACK MODEL ARCHITECTURE==========\n" + str(model)
+                af.write(to_write + "\n\n")
             log_flag = True
+            print(to_write)
 
         if cfg.ATTACKER.OPTIMIZER.NAME == "sgd":
             attacker_optimizer = optim.SGD(
