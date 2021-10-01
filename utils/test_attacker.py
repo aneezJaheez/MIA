@@ -45,11 +45,12 @@ def run_attack_test(cfg, device):
 
         if not log_flag:
             with open(cfg.LOG_FILE, "a") as af:
-                to_write = "==========ATTACK MODEL ARCHITECTURE==========\n"
-                af.write(str(model) + "\n\n")
+                to_write = "==========ATTACK MODEL ARCHITECTURE==========\n" + str(model)
+                af.write(to_write + "\n\n")
                 columns = ['victim_class', 'split', 'loss', 'accuracy']
                 af.write('\t'.join(columns) + '\n')
 
+            print(to_write)
             log_flag = True
 
 
