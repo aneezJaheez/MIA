@@ -40,9 +40,10 @@ def run_shadow_training(cfg, device):
 
         if not log_flag:
             with open(cfg.LOG_FILE, "a") as af:
-                to_write = "==========SHADOW MODEL ARCHITECTURE==========\n"
-                af.write(str(shadow_model_backbone) + "\n\n")
+                to_write = "==========SHADOW MODEL ARCHITECTURE==========\n" + str(shadow_model_backbone)
+                af.write(to_write + "\n\n")
             log_flag = True
+            print(to_write)
         
         if cfg.SHADOW.OPTIMIZER.NAME == "adam":
             shadow_optimizer = optim.Adam(
